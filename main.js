@@ -61,10 +61,11 @@ const pies = [
     },
   ];
 
+
   const renderToDom = (divId, textToPrint) => {
     const selectedDiv = document.querySelector(divId);
     selectedDiv.innerHTML = textToPrint;
-  }
+  };
   // display buttons on the DOM
   const buttons = () => {
     const domString = `
@@ -77,26 +78,89 @@ const pies = [
     renderToDom("#buttonContainer", domString);
   };
   
+  // display form on the DOM
+  const pieForm = () => {
+    const domString = `
+      <form id="pieFormForm">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input required type="text" class="form-control" id="name">
+        </div>
+        <div class="mb-3">
+          <label for="ingredients" class="form-label">Ingredients</label>
+          <input required type="text" class="form-control" id="ingredients">
+        </div>
+        <div class="mb-3">
+        <label for="bakeTemp" class="form-label">Bake Temp</label>
+        <input required type="number" class="form-control" id="bakeTemp">
+        </div>
+        <div class="mb-3">
+          <label for="drinkPairing" class="form-label">Drink Pairing</label>
+          <input required type="text" class="form-control" id="drinkPairing">
+        </div>
+        <div class="mb-3">
+          <label for="imageUrl" class="form-label">Image URL</label>
+          <input required type="url" class="form-control" id="imageUrl">
+        </div>
+        <div class="mb-3">
+          <label for="instructor" class="form-label">Instructor</label>
+          <input required type="text" class="form-control" id="instructor">
+        </div>
+        <div class="mb-3">
+          <label for="iceCream" class="form-label">Ice Cream</label>
+          <input required type="text" class="form-control" id="iceCream">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    `;
+  
+    renderToDom("#pieForm", domString);
+  };
+  
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+  
+    const newPie = {
+      name: document.querySelector("#name").value,
+      ingredients: document.querySelector("#ingredients").value,
+      bakeTemp: document.querySelector("#bakeTemp").value,
+      drinkPairing: document.querySelector("#drinkPairing").value,
+      imageUrl: document.querySelector("#imageUrl").value,
+      instructor: document.querySelector("#instructor").value,
+      iceCream: document.querySelector("#iceCream").value
+    };
+  
+    // TODO: Add obj in newPie to the pies Array!
+    // TODO: Render pies with the new pie to the DOM
+    pies.push(newPie);
+  };
+  
+  const pieFormEvents = () => {
+    const pieFormElement = document.querySelector("#pieFormForm");
+    pieFormElement.addEventListener("submit", handleFormSubmit);
+  };
+  
   const filterPies = (array, instructor) => {
-    return array.filter(pieObject => pieObject.instructor === instructor);
-  }
-
+    return array.filter((pieObject) => pieObject.instructor === instructor);
+  };
+  
   const handleButtonClick = (event) => {
     if (event.target.id === "All") {
-       return filterPies(pies);
-     // console.log("The All Button");
+      pieBuilder(pies);
     }
     if (event.target.id === "Trinity") {
-       return filterPies(pies, Trinity);
-     // console.log("Trinity's Button");
+      const trinPies = filterPies(pies, event.target.id);
+      pieBuilder(trinPies);
     }
     if (event.target.id === "Aja") {
-      console.log("Aja's Button");
+      const ajasPies = filterPies(pies, event.target.id);
+      pieBuilder(ajasPies);
     }
     if (event.target.id === "Doc") {
-      console.log("Doc's Button");
+      const docsPies = filterPies(pies, event.target.id);
+      pieBuilder(docsPies);
     }
-  }
+  };
   
   const pieBuilder = (piesArray) => {
     let domString = "";
@@ -111,22 +175,25 @@ const pies = [
         </div>
       </div>
       `;
-    })
-    renderToDom("#piesContainer", domString)
-  }
-
+    });
+  
+    renderToDom("#piesContainer", domString);
+  };
+  
   // Handles the button events
   const buttonEvents = () => {
-    document.querySelector('#buttonContainer')
-      .addEventListener('click', handleButtonClick);
-
-  }
+    document
+      .querySelector("#buttonContainer")
+      .addEventListener("click", handleButtonClick);
+  };
   
   const init = () => {
     // this starts the app
     buttons(); // PUT DOM ELEMENTS FIRST
     buttonEvents(); // EVENT LISTNERS AFTER
     pieBuilder(pies);
+    pieForm();
+    pieFormEvents();
   };
   
   init();
