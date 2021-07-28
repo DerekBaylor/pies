@@ -66,7 +66,7 @@ const pies = [
     const selectedDiv = document.querySelector(divId);
     selectedDiv.innerHTML = textToPrint;
   };
-  // display buttons on the DOM
+
   const buttons = () => {
     const domString = `
     <button type="button" class="btn btn-primary" id="All">All</button>
@@ -77,38 +77,37 @@ const pies = [
   
     renderToDom("#buttonContainer", domString);
   };
-  
-  // display form on the DOM
-  const pieForm = () => {
+
+  const pieForm = (pieObject = {}) => {
     const domString = `
       <form id="pieFormForm">
         <div class="mb-3">
           <label for="name" class="form-label">Name</label>
-          <input required type="text" class="form-control" id="name">
+          <input required type="text" value="${pieObject.name || ""}" class="form-control" id="name">
         </div>
         <div class="mb-3">
           <label for="ingredients" class="form-label">Ingredients</label>
-          <input required type="text" class="form-control" id="ingredients">
+          <input required type="text" value="${pieObject.ingredients || ""}" class="form-control" id="ingredients">
         </div>
         <div class="mb-3">
         <label for="bakeTemp" class="form-label">Bake Temp</label>
-        <input required type="number" class="form-control" id="bakeTemp">
+        <input required type="number" value="${pieObject.bakeTemp || ""}" class="form-control" id="bakeTemp">
         </div>
         <div class="mb-3">
           <label for="drinkPairing" class="form-label">Drink Pairing</label>
-          <input required type="text" class="form-control" id="drinkPairing">
+          <input required type="text" value="${pieObject.drinkPairing || ""}"} class="form-control" id="drinkPairing">
         </div>
         <div class="mb-3">
           <label for="imageUrl" class="form-label">Image URL</label>
-          <input required type="url" class="form-control" id="imageUrl">
+          <input required type="url" value="${pieObject.imageUrl || ""}" class="form-control" id="imageUrl">
         </div>
         <div class="mb-3">
           <label for="instructor" class="form-label">Instructor</label>
-          <input required type="text" class="form-control" id="instructor">
+          <input required type="text" value="${pieObject.instructor || ""}" class="form-control" id="instructor">
         </div>
         <div class="mb-3">
           <label for="iceCream" class="form-label">Ice Cream</label>
-          <input required type="text" class="form-control" id="iceCream">
+          <input required type="text" value="${pieObject.iceCream || ""}" class="form-control" id="iceCream">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
@@ -134,13 +133,21 @@ const pies = [
     pieBuilder(pies);
   };
   
-  const deletePie = (event) => {
+  const modifyPie = (event) => {
     const targetType = event.target.type;
     const targetId = event.target.id;
     
       if (targetType === "button"){
-        pies.splice(targetId,1);
-        pieBuilder(pies);
+        const [method,id] = targetId.split("--");
+        
+        if (method === "delete"){
+          pies.splice(id,1);
+          pieBuilder(pies);
+
+        } else {
+          const pieObject = pies[id];
+          pieForm(pieObject);
+        }
       };
   };
 
@@ -180,7 +187,8 @@ const pies = [
         <div class="card-body">
           <h5 class="card-title">${pie.name}</h5>
           <p class="card-text">${pie.ingredients}</p>
-          <button type="button" id=${i} class="btn btn-primary">Delete</button>
+          <button type="button" id=delete--${i} class="btn btn-danger">Delete</button>
+          <button type="button" id=edit--${i} class="btn btn-info">Edit</button>
         </div>
       </div>
       `;
@@ -197,7 +205,7 @@ const pies = [
 
     document
       .querySelector("#piesContainer")
-      .addEventListener("click", deletePie);
+      .addEventListener("click", modifyPie);
 
   };
   
